@@ -99,10 +99,16 @@ const mine = new Command()
       console.log("Mining...");
       let timer = new Date().valueOf();
       while (true) {
-        if (new Date().valueOf() - timer > 30000) {
-          console.log("New block not found in 30 seconds, updating state");
+        if (new Date().valueOf() - timer > 3000) {
+          console.log("New block not found in 3 seconds, updating state");
           timer = new Date().valueOf();
-          validatorUTXOs = await lucid.utxosAt(validatorAddress);
+          try {
+              validatorUTXOs = await lucid.utxosAt(validatorAddress);
+          } catch (e) {
+              console.log(e);
+              console.log("Error occurred while fetching utxos, continuing...");
+              continue;
+          }
 
           validatorOutRef = validatorUTXOs.find(
             (u) => u.assets[validatorHash + fromText("lord tuna")],
